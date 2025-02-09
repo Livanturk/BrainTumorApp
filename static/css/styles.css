@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #343a40;
+    font-size: 2.5rem;
+}
+
+form {
+    margin: auto;
+    max-width: 400px;
+}
+
+button {
+    width: 100%;
+}
+
+#result {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+#predicted-class {
+    font-weight: bold;
+    color: #333;
+}
+
+#predicted-class:contains("No Tumor") {
+    color: green;
+}
+
+#predicted-class:contains("Tumor") {
+    color: red;
+}
+

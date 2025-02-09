@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <h1 class="mb-3">Brain Tumor Prediction</h1>
+    <p>Upload an MRI image to predict the type of brain tumor.</p>
+
+    <!-- Form for uploading the image -->
+    <form id="upload-form" method="POST" action="{% url 'upload_and_predict' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="image" class="form-label">Upload MRI Image:</label>
+            <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Predict</button>
+    </form>
+
+    <!-- Display Prediction Results -->
+    <div id="result" class="mt-5" style="display: none;">
+        <h3>Prediction Result</h3>
+        <p><strong>Predicted Class:</strong> <span id="predicted-class"></span></p>
+        <p><strong>Confidence:</strong> <span id="confidence"></span></p>
+        <h5>Class Probabilities:</h5>
+        <ul id="class-probabilities"></ul>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('upload-form');
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault(); // Prevent form submission and page reload
+        const formData = new FormData(form);
+
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+
+            // Update the result section with prediction and image
+            document.getElementById('predicted-class').textContent = result.predicted_class;
+            document.getElementById('confidence').textContent = `${(result.confidence * 100).toFixed(2)}%`;
+            
+            // Show uploaded image
+            const uploadedImage = URL.createObjectURL(formData.get('image'));
+            document.getElementById('uploaded-image').src = uploadedImage;
+
+            // Make result section visible
+            document.getElementById('result').style.display = 'block';
+        } else {
+            alert('Error occurred while processing the image.');
+        }
+    });
+</script>
+{% endblock %}
